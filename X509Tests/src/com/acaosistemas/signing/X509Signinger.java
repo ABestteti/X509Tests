@@ -12,6 +12,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
  * Teste de assinatura de um arquivo XML com um certificado padrao X.509.
  * Criado repositorio no GITHub.
  * 01
+ * 02
  * 
  */
 public class X509Signinger {
