@@ -4,7 +4,6 @@
 package com.acaosistemas.signing;
 
 import javax.xml.crypto.dsig.XMLSignatureFactory;
-import javax.xml.datatype.*;
 
 /**
  * @author Anderson Bestetti
@@ -12,6 +11,7 @@ import javax.xml.datatype.*;
  * 
  * Teste de assinatura de um arquivo XML com um certificado padrao X.509.
  * Criado repositorio no GITHub.
+ * 01
  * 
  */
 public class X509Signinger {
@@ -26,7 +26,7 @@ public class X509Signinger {
 	
 	public static void signXMLFile(String xmlToSign) {
 		XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM");
-		
+		fac = fac;
 	}
 
 }
