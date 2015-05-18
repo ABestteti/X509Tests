@@ -10,7 +10,8 @@ import javax.xml.datatype.*;
  * @author Anderson Bestetti
  * @version 1.0
  * 
- * Teste de assinatura de um arquivo XML com um certificado padrao X.509
+ * Teste de assinatura de um arquivo XML com um certificado padrao X.509.
+ * Criado repositorio no GITHub.
  * 
  */
 public class X509Signinger {
