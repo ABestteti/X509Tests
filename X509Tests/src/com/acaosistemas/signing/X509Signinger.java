@@ -6,36 +6,66 @@
  * @see http://www.xinotes.net/notes/note/751/
  * Teste de assinatura de um arquivo XML com um certificado padrao X.509.
  * Criado repositorio no GITHub.
- * Alteração na Ação Sistemas.
+ * Alteraï¿½ï¿½o na Aï¿½ï¿½o Sistemas.
  * 
  */
 package com.acaosistemas.signing;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilterInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import javax.xml.crypto.*;
-import javax.xml.crypto.dsig.*;
+import javax.xml.crypto.MarshalException;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.DigestMethod;
+import javax.xml.crypto.dsig.Reference;
+import javax.xml.crypto.dsig.SignatureMethod;
+import javax.xml.crypto.dsig.SignedInfo;
+import javax.xml.crypto.dsig.Transform;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
-import javax.xml.crypto.dsig.keyinfo.*;
-import javax.xml.crypto.dsig.spec.*;
-import javax.xml.crypto.dom.*;
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
+import javax.xml.crypto.dsig.spec.XPathFilterParameterSpec;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class X509Signinger {
@@ -44,7 +74,7 @@ public class X509Signinger {
 	
     private static final String KEY_STORE_TYPE   = "JKS";
     //private static final String KEY_STORE_NAME   = "mykeystore";
-    private static final String KEY_STORE_NAME   = "D:\\temp\\OpenSSL_Key\\URHDesenv_test_cert.jks";
+    private static final String KEY_STORE_NAME   = "resources/URHDesenv_test_cert.jks";
     private static final String KEY_STORE_PASS   = "universalrh";
     private static final String PRIVATE_KEY_PASS = "universalrh";
     private static final String KEY_ALIAS        = "1";
@@ -55,6 +85,7 @@ public class X509Signinger {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		if (args.length < 2) {
 			usage();
@@ -176,15 +207,15 @@ public class X509Signinger {
 			sigParent = doc.getDocumentElement();
 			referenceURI = ""; // Empty string means whole document
 			try {
-				//transforms = Collections.singletonList(sigFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
-				transforms = new ArrayList<Transform>() {
+				transforms = Collections.singletonList(sigFactory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
+				/*transforms = new ArrayList<Transform>() {
 					{
 						add(sigFactory.newTransform(Transform.ENVELOPED,
 								(TransformParameterSpec) null));
 						add(sigFactory.newTransform(Transform.BASE64,
 								(TransformParameterSpec) null));
 					}
-				};
+				};*/
 			} catch (NoSuchAlgorithmException e) {
 				throw new RuntimeException(e);
 			} catch (InvalidAlgorithmParameterException e) {
@@ -317,8 +348,11 @@ public class X509Signinger {
 			throw new RuntimeException(e);
 		}
     	try {
+    		doc.normalizeDocument();
 			trans.transform(new DOMSource(doc), new StreamResult(os));
+			System.out.println("File "+outputFile+" created successfully.");
 		} catch (TransformerException e) {
+			System.out.println("Error when saving the file "+outputFile);
 			throw new RuntimeException(e);
 		}
         
