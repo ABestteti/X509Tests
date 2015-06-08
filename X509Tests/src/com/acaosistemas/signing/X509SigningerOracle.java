@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -78,13 +79,28 @@ public class X509SigningerOracle {
 		// that, and also specify the SHA1 digest algorithm and
 		// the ENVELOPED Transform.
 		Reference ref;
+		List transforms = new ArrayList();
+		
 		try {
+			transforms.add(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
+			transforms.add(fac.newTransform("http://www.w3.org/TR/2001/REC-xml-c14n-20010315", (TransformParameterSpec) null));
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new RuntimeException(e);
+		}
+		
+		try {
+//			ref = fac.newReference
+//			 ("", fac.newDigestMethod(DigestMethod.SHA1, null),
+//			  Collections.singletonList
+//			   (fac.newTransform
+//			    (Transform.ENVELOPED, (TransformParameterSpec) null)),
+//			     null, null);
 			ref = fac.newReference
-			 ("", fac.newDigestMethod(DigestMethod.SHA1, null),
-			  Collections.singletonList
-			   (fac.newTransform
-			    (Transform.ENVELOPED, (TransformParameterSpec) null)),
-			     null, null);
+					 ("", fac.newDigestMethod(DigestMethod.SHA1, null),
+					  transforms,
+					     null, null);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		} catch (InvalidAlgorithmParameterException e) {
@@ -178,7 +194,7 @@ public class X509SigningerOracle {
 		
 		// Marshal, generate, and sign the enveloped signature.
 		try {
-			signature.sign(dsc);
+			signature.sign(dsc);			
 		} catch (MarshalException e) {
 			throw new RuntimeException(e);
 		} catch (XMLSignatureException e) {
@@ -206,6 +222,8 @@ public class X509SigningerOracle {
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
+
+		System.out.println("Generated the signed document "+outputFile);
 	}
 	
 	public static void usage() {
