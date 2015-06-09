@@ -4,6 +4,7 @@
  * @see http://www.oracle.com/technetwork/articles/javase/dig-signature-api-140772.html
  * @see http://www.java-tips.org/java-ee-tips/xml-digital-signature-api/using-the-java-xml-digital-signatur-2.html
  * @see http://www.xinotes.net/notes/note/751/
+ * @see http://stackoverflow.com/questions/11410770/load-rsa-public-key-from-file
  * Teste de assinatura de um arquivo XML com um certificado padrao X.509.
  **/
 package com.acaosistemas.signing;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
@@ -81,6 +83,7 @@ public class X509SignValidateOracle {
 		}
 		try {
 			ks.load(new FileInputStream(KEY_STORE_NAME), KEY_STORE_PASS.toCharArray());
+			
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		} catch (CertificateException e) {
