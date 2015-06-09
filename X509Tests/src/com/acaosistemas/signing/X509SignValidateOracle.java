@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 public class X509SignValidateOracle {
 
     private static final String KEY_STORE_TYPE   = "JKS";
-    private static final String KEY_STORE_NAME   = "resources/URHDesenv_test_cert_public.pem";
+    private static final String KEY_STORE_NAME   = "resources/URHDesenv_test_cert_public.jks";
     private static final String KEY_STORE_PASS   = "universalrh";
     private static final String KEY_ALIAS        = "1";
 
